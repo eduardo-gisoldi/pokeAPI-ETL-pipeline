@@ -1,15 +1,16 @@
 # PokéAPI ETL Pipeline
 
+This is my first fully structured Kotlin project! I created this tool specifically to facilitate the data management for a larger Android application I am developing called **Who's That Pokeapp**. 
+
 A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin. This tool fetches raw Pokémon data from the [PokéAPI](https://pokeapi.co/), transforms the complex nested JSON into a simplified, clean and game-ready format. The output is a localized `.json` database.
 
 ## Features
 * **Extract:** Fetches the National Pokédex directly from the PokéAPI endpoints.
-* **Transform:**
-    * Parses complex, nested JSON responses using `Gson`.
+* **Transform:** * Parses complex, nested JSON responses using `Gson`.
     * Dynamically maps Pokémon IDs to their respective regions (Kanto up to Gen 10).
-    * Formats ID  and name strings (e.g., `1` becomes `"001"`, "bulbasaur" becomes "Bulbasaur").
+    * Formats ID and name strings (e.g., `1` becomes `"001"`, "bulbasaur" becomes "Bulbasaur").
     * Auto-generates correct file names for base and shiny sprites. 
-      * (expecting a modified version of the numbered and named sprites found in https://www.dragonflycave.com/resources/sprites/)
+      * *(Expecting a modified version of the numbered and named sprites found at [Dragonflycave](https://www.dragonflycave.com/resources/sprites/))*
 * **Load:** Compiles the formatted data into a single `pokemon_data.json` file.
 
 ## Technologies Used
@@ -19,9 +20,9 @@ A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin
 
 ## How to Run
 1. Clone this repository.
-2. Open the project in IntelliJ IDEA or your preffered IDE.
+2. Open the project in IntelliJ IDEA or your preferred IDE.
 3. Run `Main.kt`.
-4. The script will sequentially fetch the data (with a built-in 50ms delay to respect API limits) and generate `pokemon_data.json` in the project root.
+4. The script will sequentially fetch the data (with a built-in 50ms delay to respect API limits) and generate `pokemon_data.json` in the `output/` folder.
 
 ## Sample Output
 The pipeline generates a clean, flattened JSON array. Here is an example of a single transformed entry (`output/pokemon_data.json`):

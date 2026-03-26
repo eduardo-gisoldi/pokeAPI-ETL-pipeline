@@ -9,6 +9,10 @@ fun main() {
     // setup gson
     val gson = GsonBuilder().setPrettyPrinting().create()
 
+    // read folder once to save time (Using the path from your screenshot)
+    val spritesFolder = File("/home/edu/Documents/Datasets/pkmn01/pokemon")
+    val allLocalFiles = spritesFolder.listFiles()?.map { it.name } ?: emptyList()
+
     // loop through the national dex
     for (i in 1..1025) {
         println("Extracting Pokémon #$i...")
@@ -50,10 +54,17 @@ fun main() {
             )
 
             // base sprite name logic
-            val baseSpriteName = "${region.take(3).replaceFirstChar { it.lowercase() }}$formattedNumber${apiPoke.name}"
+            // matches p1, p1shiny, p1caramelswirl, but strictly prevents p1 matching p10
+            val idRegex = Regex("^p${apiPoke.id}(?![0-9])(.*)\\.png$")
+            val matchingFiles = allLocalFiles.filter { it.matches(idRegex) }
+
+            // separate them and drop the .png extension for Android compatibility
+            val baseList = matchingFiles.filter { !it.contains("shiny") }.map { it.removeSuffix(".png") }
+            val shinyList = matchingFiles.filter { it.contains("shiny") }.map { it.removeSuffix(".png") }
+
             val mySprites = Sprites(
-                base_name = baseSpriteName,
-                shiny_name = "${baseSpriteName}_shiny"
+                base = baseList,
+                shiny = shinyList
             )
 
             // load
@@ -113,8 +124,8 @@ data class ApiNameUrl(val name: String, val url: String)
 
 // Destination Blueprints
 data class Sprites(
-    val base_name: String,
-    val shiny_name: String
+    val base: List<String>,
+    val shiny: List<String>
 )
 data class BaseStats(
     val hp: Int,
