@@ -1,17 +1,18 @@
 # PokéAPI ETL Pipeline
 
-This is my first fully structured Kotlin project! I created this tool specifically to facilitate the data management for a larger Android application I am developing called **Who's That Pokeapp**. 
+This is my first fully structured Kotlin project! I created this tool specifically to facilitate the data management for a larger Android application I am developing called **Who's That Pokeapp**.
 
-A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin. This tool fetches raw Pokémon data from the [PokéAPI](https://pokeapi.co/), transforms the complex nested JSON into a simplified, clean and game-ready format. The output is a localized `.json` database.
+A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin. This tool fetches raw Pokémon data across multiple [PokéAPI](https://pokeapi.co/) endpoints, scans a local directory of sprite assets, and transforms the complex nested JSON into a simplified, clean, and game-ready format. The output is a localized `.json` database.
 
 ## Features
-* **Extract:** Fetches the National Pokédex directly from the PokéAPI endpoints.
+* **Extract:** * Fetches data from three separate PokéAPI endpoints (`/pokemon/`, `/pokemon-species/`, and `/evolution-chain/`).
+    * Reads a local directory of image assets to verify which sprites (and alternate forms/shinies) actually exist on the disk.
 * **Transform:** * Parses complex, nested JSON responses using `Gson`.
     * Dynamically maps Pokémon IDs to their respective regions (Kanto up to Gen 10).
-    * Formats ID and name strings (e.g., `1` becomes `"001"`, "bulbasaur" becomes "Bulbasaur").
-    * Auto-generates correct file names for base and shiny sprites. 
-      * *(Expecting a modified version of the numbered and named sprites found at [Dragonflycave](https://www.dragonflycave.com/resources/sprites/))*
-* **Load:** Compiles the formatted data into a single `pokemon_data.json` file.
+    * Extracts extended species data, including Habitats, Colors, Egg Groups, EV Yields, and calculates the specific integer-based Evolution Stage (0, 1, 2) using a recursive tree search.
+    * Employs an in-memory caching system for Evolution Chains to drastically reduce API calls and prevent rate-limiting.
+    * Uses Regex to dynamically match local file names (e.g., `p1.png`, `p1shiny.png`) to their respective Pokémon and stores them in lists to support multiple forms.
+* **Load:** * Compiles the formatted data into a single `pokemon_data.json` file.
 
 ## Technologies Used
 * **Kotlin** (JVM)
@@ -20,9 +21,11 @@ A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin
 
 ## How to Run
 1. Clone this repository.
-2. Open the project in IntelliJ IDEA or your preferred IDE.
-3. Run `Main.kt`.
-4. The script will sequentially fetch the data (with a built-in 50ms delay to respect API limits) and generate `pokemon_data.json` in the `output/` folder.
+2. Ensure you have a local folder containing your named Pokémon sprites (e.g., `p1.png`, `p1shiny.png`).
+3. Open `Main.kt` in IntelliJ IDEA or your preferred IDE and update the `spritesFolder` variable to point to your local images directory.
+4. Run `Main.kt`.
+5. The script will sequentially fetch the data. Because it hits multiple endpoints per Pokémon, it uses an in-memory cache and a 100ms delay to respect API limits. The total build time is roughly 3–4 minutes.
+6. The generated `pokemon_data.json` will be saved in the `output/` folder.
 
 ## Sample Output
 The pipeline generates a clean, flattened JSON array. Here is an example of a single transformed entry (`output/pokemon_data.json`):
@@ -52,8 +55,22 @@ The pipeline generates a clean, flattened JSON array. Here is an example of a si
       "speed": 45
     },
     "sprites": {
-      "base_name": "kan001Bulbasaur",
-      "shiny_name": "kan001Bulbasaur_shiny"
+      "base": [
+        "p1"
+      ],
+      "shiny": [
+        "p1shiny"
+      ]
     },
+    "habitat": "Grassland",
+    "color": "Green",
+    "egg_groups": [
+      "Monster",
+      "Plant"
+    ],
+    "evolution_stage": 0,
+    "ev_yield": [
+      "1 Special Attack"
+    ],
     "additional": []
   }

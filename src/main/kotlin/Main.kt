@@ -9,18 +9,32 @@ fun main() {
     // setup gson
     val gson = GsonBuilder().setPrettyPrinting().create()
 
-    // read folder once to save time (Using the path from your screenshot)
+    // read folder once to save time
     val spritesFolder = File("/home/edu/Documents/Datasets/pkmn01/pokemon")
     val allLocalFiles = spritesFolder.listFiles()?.map { it.name } ?: emptyList()
+
+    // setup cache for evolution chains
+    val evoChainCache = mutableMapOf<String, ApiEvolutionChainWrapper>()
 
     // loop through the national dex
     for (i in 1..1025) {
         println("Extracting Pokémon #$i...")
 
         try {
-            // extract
+            // extract pokemon data
             val rawData = java.net.URL("https://pokeapi.co/api/v2/pokemon/$i/").readText()
             val apiPoke = gson.fromJson(rawData, ApiPokemon::class.java)
+
+            // extract species data
+            val speciesRaw = java.net.URL("https://pokeapi.co/api/v2/pokemon-species/$i/").readText()
+            val apiSpecies = gson.fromJson(speciesRaw, ApiSpecies::class.java)
+
+            // extract evolution data
+            val evoUrl = apiSpecies.evolution_chain.url
+            val apiEvo = evoChainCache.getOrPut(evoUrl) {
+                val evoRaw = java.net.URL(evoUrl).readText()
+                gson.fromJson(evoRaw, ApiEvolutionChainWrapper::class.java)
+            }
 
             // transform
             val formattedNumber = apiPoke.id.toString().padStart(3, '0')
@@ -28,6 +42,21 @@ fun main() {
 
             val cleanTypes = apiPoke.types.map { it.type.name.replaceFirstChar { char -> char.uppercase() } }
             val cleanAbilities = apiPoke.abilities.map { it.ability.name.replaceFirstChar { char -> char.uppercase() } }
+
+            // clean species data
+            val cleanColor = apiSpecies.color.name.replaceFirstChar { it.uppercase() }
+            // habitat can be null
+            val cleanHabitat = apiSpecies.habitat?.name?.replaceFirstChar { it.uppercase() } ?: "Unknown"
+            val cleanEggGroups = apiSpecies.egg_groups.map { it.name.replaceFirstChar { char -> char.uppercase() } }
+
+            // ev yield logic
+            val evYieldList = apiPoke.stats.filter { it.effort > 0 }.map {
+                val statName = it.stat.name.replace("-", " ").replaceFirstChar { char -> char.uppercase() }
+                "${it.effort} $statName"
+            }
+
+            // evolution stage logic (now returns an Int)
+            val evoStage = getEvolutionStage(apiEvo.chain, apiPoke.name)
 
             val region = when (apiPoke.id) {
                 in 1..151 -> "Kanto"
@@ -54,11 +83,10 @@ fun main() {
             )
 
             // base sprite name logic
-            // matches p1, p1shiny, p1caramelswirl, but strictly prevents p1 matching p10
             val idRegex = Regex("^p${apiPoke.id}(?![0-9])(.*)\\.png$")
             val matchingFiles = allLocalFiles.filter { it.matches(idRegex) }
 
-            // separate them and drop the .png extension for Android compatibility
+            // separate them and drop the .png extension
             val baseList = matchingFiles.filter { !it.contains("shiny") }.map { it.removeSuffix(".png") }
             val shinyList = matchingFiles.filter { it.contains("shiny") }.map { it.removeSuffix(".png") }
 
@@ -79,6 +107,11 @@ fun main() {
                 abilities = cleanAbilities,
                 base_stats = stats,
                 sprites = mySprites,
+                habitat = cleanHabitat,
+                color = cleanColor,
+                egg_groups = cleanEggGroups,
+                evolution_stage = evoStage,
+                ev_yield = evYieldList,
                 additional = emptyList()
             )
 
@@ -90,7 +123,7 @@ fun main() {
         }
 
         // pause to avoid rate limits
-        Thread.sleep(50)
+        Thread.sleep(100)
     }
 
     // save file
@@ -107,6 +140,20 @@ fun main() {
     println("Done! Check the /output folder for your database.")
 }
 
+// helper function for evolution stage
+fun getEvolutionStage(chain: ApiEvolutionNode, targetName: String, currentStage: Int = 0): Int {
+    // found the pokemon
+    if (chain.species.name == targetName) {
+        return currentStage
+    }
+    // check next evolution
+    for (evolution in chain.evolves_to) {
+        val stage = getEvolutionStage(evolution, targetName, currentStage + 1)
+        if (stage != -1) return stage
+    }
+    return -1
+}
+
 // Source Blueprints
 data class ApiPokemon(
     val id: Int,
@@ -118,9 +165,25 @@ data class ApiPokemon(
     val abilities: List<ApiAbilityWrapper>
 )
 data class ApiTypeWrapper(val type: ApiNameUrl)
-data class ApiStatWrapper(val base_stat: Int, val stat: ApiNameUrl)
+data class ApiStatWrapper(val base_stat: Int, val effort: Int, val stat: ApiNameUrl)
 data class ApiAbilityWrapper(val ability: ApiNameUrl)
 data class ApiNameUrl(val name: String, val url: String)
+
+// Species Blueprints
+data class ApiSpecies(
+    val color: ApiNameUrl,
+    val egg_groups: List<ApiNameUrl>,
+    val habitat: ApiNameUrl?,
+    val evolution_chain: ApiUrl
+)
+data class ApiUrl(val url: String)
+
+// Evolution Chain Blueprints
+data class ApiEvolutionChainWrapper(val chain: ApiEvolutionNode)
+data class ApiEvolutionNode(
+    val species: ApiNameUrl,
+    val evolves_to: List<ApiEvolutionNode>
+)
 
 // Destination Blueprints
 data class Sprites(
@@ -146,5 +209,10 @@ data class PokemonData(
     val abilities: List<String>,
     val base_stats: BaseStats,
     val sprites: Sprites,
+    val habitat: String,
+    val color: String,
+    val egg_groups: List<String>,
+    val evolution_stage: Int,
+    val ev_yield: List<String>,
     val additional: List<String>
 )
