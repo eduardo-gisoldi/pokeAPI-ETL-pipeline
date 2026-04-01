@@ -5,14 +5,17 @@ This is my first fully structured Kotlin project! I created this tool specifical
 A lightweight, automated ETL (Extract, Transform, Load) pipeline built in Kotlin. This tool fetches raw Pokémon data across multiple [PokéAPI](https://pokeapi.co/) endpoints, scans a local directory of sprite assets, and transforms the complex nested JSON into a simplified, clean, and game-ready format. The output is a localized `.json` database.
 
 ## Features
-* **Extract:** * Fetches data from three separate PokéAPI endpoints (`/pokemon/`, `/pokemon-species/`, and `/evolution-chain/`).
+* **Extract:**
+    * Fetches data from three separate PokéAPI endpoints (`/pokemon/`, `/pokemon-species/`, and `/evolution-chain/`).
     * Reads a local directory of image assets to verify which sprites (and alternate forms/shinies) actually exist on the disk.
-* **Transform:** * Parses complex, nested JSON responses using `Gson`.
+* **Transform:**
+    * Parses complex, nested JSON responses using `Gson`.
     * Dynamically maps Pokémon IDs to their respective regions (Kanto up to Gen 10).
     * Extracts extended species data, including Habitats, Colors, Egg Groups, EV Yields, and calculates the specific integer-based Evolution Stage (0, 1, 2) using a recursive tree search.
     * Employs an in-memory caching system for Evolution Chains to drastically reduce API calls and prevent rate-limiting.
     * Uses Regex to dynamically match local file names (e.g., `p1.png`, `p1shiny.png`) to their respective Pokémon and stores them in lists to support multiple forms.
-* **Load:** * Compiles the formatted data into a single `pokemon_data.json` file.
+* **Load:**
+    * Compiles the formatted data into a single `pokemon_data.json` file.
 
 ## Technologies Used
 * **Kotlin** (JVM)
