@@ -1,0 +1,20 @@
+isStarter
+Bulbasaur, Ivysaur, Venusaur, Charmander, Charmeleon, Charizard, Squirtle, Wartortle, Blastoise, Chikorita, Bayleef, Meganium, Cyndaquil, Quilava, Typhlosion, Totodile, Croconaw, Feraligatr, Treecko, Grovyle, Sceptile, Torchic, Combusken, Blaziken, Mudkip, Marshtomp, Swampert, Turtwig, Grotle, Torterra, Chimchar, Monferno, Infernape, Piplup, Prinplup, Empoleon, Snivy, Servine, Serperior, Tepig, Pignite, Emboar, Oshawott, Dewott, Samurott, Chespin, Quilladin, Chesnaught, Fennekin, Braixen, Delphox, Froakie, Frogadier, Greninja, Rowlet, Dartrix, Decidueye, Litten, Torracat, Incineroar, Popplio, Brionne, Primarina, Grookey, Thwackey, Rillaboom, Scorbunny, Raboot, Cinderace, Sobble, Drizzile, Inteleon, Sprigatito, Floragato, Meowscarada, Fuecoco, Crocalor, Skeledirge, Quaxly, Quaxwell, Quaquaval
+isRegionalBird
+Pidgey, Pidgeotto, Pidgeot, Spearow, Fearow, Hoothoot, Noctowl, Taillow, Swellow, Starly, Staravia, Staraptor, Pidove, Tranquill, Unfezant, Fletchling, Fletchinder, Talonflame, Pikipek, Trumbeak, Toucannon, Rookidee, Corvisquire, Corviknight, Wattrel, Kilowattrel
+isRegionalRodent
+Rattata, Raticate, Sentret, Furret, Zigzagoon, Linoone, Bidoof, Bibarel, Patrat, Watchog, Bunnelby, Diggersby, Yungoos, Gumshoos, Skwovet, Greedent, Lechonk, Oinkologne
+isRegionalBug
+Caterpie, Metapod, Butterfree, Weedle, Kakuna, Beedrill, Ledyba, Ledian, Spinarak, Ariados, Wurmple, Silcoon, Beautifly, Cascoon, Dustox, Kricketot, Kricketune, Burmy, Wormadam, Mothim, Sewaddle, Swadloon, Leavanny, Venipede, Whirlipede, Scolipede, Scatterbug, Spewpa, Vivillon, Grubbin, Charjabug, Vikavolt, Blipbug, Dottler, Orbeetle, Tarountula, Spidops, Nymble, Lokix
+isPikaClone
+Pichu, Pikachu, Raichu, Plusle, Minun, Pachirisu, Emolga, Dedenne, Togedemaru, Morpeko, Pawmi, Pawmo, Pawmot
+isPseudoLegendary
+Dratini, Dragonair, Dragonite, Larvitar, Pupitar, Tyranitar, Bagon, Shelgon, Salamence, Beldum, Metang, Metagross, Gible, Gabite, Garchomp, Deino, Zweilous, Hydreigon, Goomy, Sliggoo, Goodra, Jangmo-o, Hakamo-o, Kommo-o, Dreepy, Drakloak, Dragapult, Frigibax, Arctibax, Baxcalibur
+isFossil
+Omanyte, Omastar, Kabuto, Kabutops, Aerodactyl, Lileep, Cradily, Anorith, Armaldo, Cranidos, Rampardos, Shieldon, Bastiodon, Tirtouga, Carracosta, Archen, Archeops, Tyrunt, Tyrantrum, Amaura, Aurorus, Dracozolt, Arctozolt, Dracovish, Arctovish
+isBoxArtLegendary
+Mewtwo, Ho-Oh, Lugia, Suicune, Groudon, Kyogre, Rayquaza, Dialga, Palkia, Giratina, Reshiram, Zekrom, Kyurem, Xerneas, Yveltal, Zygarde, Solgaleo, Lunala, Necrozma, Zacian, Zamazenta, Eternatus, Koraidon, Miraidon
+isLegendarySubGroup
+Articuno, Zapdos, Moltres, Raikou, Entei, Suicune, Regirock, Regice, Registeel, Latias, Latios, Uxie, Mesprit, Azelf, Cresselia, Heatran, Regigigas, Cobalion, Terrakion, Virizion, Keldeo, Tornadus, Thundurus, Landorus, Tapu Koko, Tapu Lele, Tapu Bulu, Tapu Fini, Nihilego, Buzzwole, Pheromosa, Xurkitree, Celesteela, Kartana, Guzzlord, Galarian Articuno, Galarian Zapdos, Galarian Moltres, Regieleki, Regidrago, Wo-Chien, Chien-Pao, Ting-Lu, Chi-Yu, Okidogi, Munkidori, Fezandipiti
+isMythical
+Mew, Celebi, Jirachi, Deoxys, Manaphy, Darkrai, Shaymin, Arceus, Victini, Keldeo, Meloetta, Genesect, Diancie, Hoopa, Volcanion, Magearna, Marshadow, Zeraora, Meltan, Melmetal, Zarude, Pecharunt

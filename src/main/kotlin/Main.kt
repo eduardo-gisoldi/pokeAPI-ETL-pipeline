@@ -36,9 +36,32 @@ fun main() {
                 gson.fromJson(evoRaw, ApiEvolutionChainWrapper::class.java)
             }
 
-            // transform
+            // transform number, name, types, abilities, habitat, color, egg groups, ev yield, and evolution stage
+
             val formattedNumber = apiPoke.id.toString().padStart(3, '0')
-            val capitalizedName = apiPoke.name.replaceFirstChar { it.uppercase() }
+            var formattedName = apiPoke.name
+
+            // treating hyphenated names
+            val keepHyphenPokemon = setOf(
+                "ho-oh", "porygon-z", "jangmo-o", "hakamo-o", "kommo-o",
+                "chi-yu", "chien-pao", "ting-lu", "wo-chien"
+            )
+            val removeHyphenPokemon = setOf(
+                "mr-mime", "mime-jr", "mr-rime", "type-null",
+                "tapu-koko", "tapu-lele", "tapu-bulu", "tapu-fini",
+                "great-tusk", "scream-tail", "brute-bonnet", "flutter-mane",
+                "slither-wing", "sandy-shocks", "iron-treads", "iron-bundle",
+                "iron-hands", "iron-jugulis", "iron-moth", "iron-thorns",
+                "roaring-moon", "iron-valiant", "walking-wake", "iron-leaves",
+                "gouging-fire", "raging-bolt", "iron-boulder", "iron-crown"
+            )
+            formattedName = when (formattedName) {
+                in keepHyphenPokemon -> formattedName
+                in removeHyphenPokemon -> formattedName.replace("-", " ")
+                else -> formattedName.substringBefore('-')
+            }
+
+            val capitalizedName = formattedName.replaceFirstChar { it.uppercase() }
 
             val cleanTypes = apiPoke.types.map { it.type.name.replaceFirstChar { char -> char.uppercase() } }
             val cleanAbilities = apiPoke.abilities.map { it.ability.name.replaceFirstChar { char -> char.uppercase() } }
@@ -95,7 +118,7 @@ fun main() {
                 shiny = shinyList
             )
 
-            // load
+            // load data class with all the cleaned and transformed info
             val pokemonData = PokemonData(
                 id = apiPoke.id,
                 national_number = formattedNumber,
